@@ -1,0 +1,6 @@
+# Installed on Server A at /etc/mysql/mysql.conf.d/zz-week4-replication.cnf
+# Tailscale transport only; do not expose 3306 to the public internet.
+[mysqld]
+bind-address = 127.0.0.1,100.75.179.16
+# Existing MySQL 8 source: server_id=1, log_bin=ON, binlog_format=ROW
+# Replication credentials are intentionally omitted.
