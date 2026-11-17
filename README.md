@@ -62,7 +62,7 @@ From the 12:08 backup, `index.html` was restored into `/home/backupsvc/restore-t
 - **Post-reboot test (17 Nov 2026):** B booted at **14:28:01 UTC** (reported by `uptime -s`). After that, `nginx`, `mariadb`, `viikko4`, and `tailscaled` all reported **active**; the local B page returned **HTTP 200** and contained the GitHub repository link.
 - **Post-reboot replication:** MariaDB reported `Slave_IO_Running: Yes`, `Slave_SQL_Running: Yes`, `Seconds_Behind_Master: 0`, with empty IO/SQL error fields.
 - **Post-reboot backup transfer:** from A, `week4-backup.sh` returned `Backup completed successfully!` at 14:44 UTC, with the timestamped archive on B. A's `crontab -l` still contained the hourly schedule (`0 * * * *`).
-- To verify the source-to-replica update during peer assessment: record B's value, load A's `/viikko2/`, then reload B; B should show the new value.
+- **Source-to-replica counter test passed (17 Nov 2026):** B's `SELECT kaynnit FROM viikko2.kayntilaskuri` showed **34**. Loading A's `/viikko2/` once and querying B again after 3 seconds showed **35**. This confirms A's update reached B without using B's page to write to the database. During peer assessment, repeating the same check should show the latest change.
 
 ## Main files
 
