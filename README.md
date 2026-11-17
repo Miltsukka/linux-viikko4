@@ -51,7 +51,7 @@ Values below are from `id` and `stat -c '%U:%G %a %n'` on 17 November 2026. Mode
 | A | `/home/ubuntu/week4-backup.sh` | ubuntu:ubuntu | 700 | Backup script executable by owner |
 | A | `/home/ubuntu/.ssh/id_ed25519_week4_backup` | ubuntu:ubuntu | 600 | Private SSH key, **never published** |
 | B | `/var/www/html` | root:root | 755 | Nginx web root |
-| B | `/var/lib/mysql` | mysql:mysql | 755 | MariaDB data; **check and tighten permissions to 700** |
+| B | `/var/lib/mysql` | mysql:mysql | 700 | MariaDB data; owner-only access after permission hardening |
 | B | `/srv/backups/viikko4` | backupsvc:backupsvc | 700 | Non-public, owner-only backups |
 | B | `/opt/viikko4` | root:root | 755 | Read-only app directory |
 | B | `/opt/viikko4/app.py` | root:root | 644 | Flask source, writable by root |
