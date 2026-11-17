@@ -1,0 +1,7 @@
+# Server B: combine with your existing MariaDB configuration
+[mariadb]
+server_id=2
+read_only=ON
+replicate-do-db=viikko2
+# Source coordinates and credentials are configured locally, not committed.
+# This intentionally does not contain a password.
