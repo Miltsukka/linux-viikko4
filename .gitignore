@@ -1,0 +1,14 @@
+*.sql
+*.sql.gz
+*.pem
+*.key
+id_ed25519*
+*password*
+*.log
+*.tar
+*.tar.gz
+.env
+.env.*
+__pycache__/
+.venv/
+*.bak
