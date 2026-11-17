@@ -26,6 +26,43 @@ A coursework implementation using two CSC cPouta Ubuntu servers.
 - A uses a dedicated SSH key for the backup transfer. **Private keys are not committed here.**
 - Application and database credentials are not included in this repository.
 
+### Measured server disk layout (17 November 2026)
+
+Both VMs have an 80 GiB virtual disk (`/dev/vda`). `lsblk` reported:
+
+| Device / mount | Server A (`linux-week1`) | Server B (`linux-week4`) |
+|---|---|---|
+| `/dev/vda` disk | 80G | 80G |
+| `/dev/vda1`, `ext4`, mounted at `/` | 79G partition, 77G filesystem | 79G partition, 77G filesystem |
+| `/dev/vda16`, `ext4`, mounted at `/boot` | 913M | 913M |
+| `/dev/vda15`, `vfat`, mounted at `/boot/efi` | 106M | 106M |
+| Root filesystem usage | 3.2G used, 74G available | 3.6G used, 73G available |
+
+The web root and database live on each VM's root filesystem. B's backup directory is also on B's root filesystem, **not on a separately mounted backup disk**. However, the backups reside on a different VM from the original source, outside the public web root.
+
+### Measured Linux users and file permissions
+
+Values below are from `id` and `stat -c '%U:%G %a %n'` on 17 November 2026. Modes use octal notation (700 = owner-only; 600 = owner-only read/write; 755 = owner write and public read/traverse; 644 = owner write and public read).
+
+| Server | Path | Owner:group | Mode | Purpose |
+|---|---|---|---|---|
+| A | `/var/www/html` | root:root | 755 | Website files and Week 3 report |
+| A | `/var/lib/mysql` | mysql:mysql | 700 | MySQL data, restricted to owner |
+| A | `/home/ubuntu/week4-backup.sh` | ubuntu:ubuntu | 700 | Backup script executable by owner |
+| A | `/home/ubuntu/.ssh/id_ed25519_week4_backup` | ubuntu:ubuntu | 600 | Private SSH key, **never published** |
+| B | `/var/www/html` | root:root | 755 | Nginx web root |
+| B | `/var/lib/mysql` | mysql:mysql | 755 | MariaDB data; **check and tighten permissions to 700** |
+| B | `/srv/backups/viikko4` | backupsvc:backupsvc | 700 | Non-public, owner-only backups |
+| B | `/opt/viikko4` | root:root | 755 | Read-only app directory |
+| B | `/opt/viikko4/app.py` | root:root | 644 | Flask source, writable by root |
+
+Account identities:
+
+- A: `ubuntu` (UID 1000; sudo-capable administration) and `mysql` (UID 109; database service).
+- B: `ubuntu` (UID 1000), `mysql` (UID 109), `backupsvc` (UID 1001; SSH/rsync backup receiver), and `week4web` (UID 999; dedicated non-login application service).
+- The B app uses local MariaDB account `week4web` with **SELECT only** on `viikko2.kayntilaskuri`; A uses a separate dedicated replication account for the source-to-replica connection.
+- The private key is restricted on A. The B backup directory is `700`. The `backupsvc` home SSH folder and `authorized_keys` file should be checked with `sudo stat` before claiming their exact numeric modes (the initial unprivileged traversal did not show them).
+
 ### Successful backup runs (17 November 2026, UTC)
 
 | Time | Execution | Result |
