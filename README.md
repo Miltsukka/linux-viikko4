@@ -34,7 +34,7 @@ A coursework implementation using two CSC cPouta Ubuntu servers.
 | 13:00:02 | Cron | SUCCESS |
 | 14:00:02 | Cron | SUCCESS |
 
-All three timestamped directories were listed on B.
+All three timestamped directories were listed on B. Further manual backup runs were successful at 14:34:20, 14:40:16 and 14:44:00 UTC. The last run copied files to B after its reboot.
 
 ### File restoration
 
@@ -59,7 +59,9 @@ From the 12:08 backup, `index.html` was restored into `/home/backupsvc/restore-t
 - B's local `/viikko4/` endpoint returned **HTTP 200**.
 - B's counter stayed **27 → 27** after two loads of B's page.
 - The replication connection was initially blocked by a self-signed certificate validation error; that issue was addressed, and the connection was reported working.
-- Nginx, MariaDB and the Week 4 app were reported working after reconnecting to B. **Record complete reboot verification and post-reboot backup reception results on the site after rechecking**.
+- **Post-reboot test (17 Nov 2026):** B booted at **14:28:01 UTC** (reported by `uptime -s`). After that, `nginx`, `mariadb`, `viikko4`, and `tailscaled` all reported **active**; the local B page returned **HTTP 200** and contained the GitHub repository link.
+- **Post-reboot replication:** MariaDB reported `Slave_IO_Running: Yes`, `Slave_SQL_Running: Yes`, `Seconds_Behind_Master: 0`, with empty IO/SQL error fields.
+- **Post-reboot backup transfer:** from A, `week4-backup.sh` returned `Backup completed successfully!` at 14:44 UTC, with the timestamped archive on B. A's `crontab -l` still contained the hourly schedule (`0 * * * *`).
 - To verify the source-to-replica update during peer assessment: record B's value, load A's `/viikko2/`, then reload B; B should show the new value.
 
 ## Main files
