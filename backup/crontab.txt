@@ -1,0 +1,3 @@
+# On Server A (ubuntu user). Week 3 report remains in place.
+* * * * * /bin/bash /home/ubuntu/report.sh
+0 * * * * /home/ubuntu/week4-backup.sh >> /home/ubuntu/week4-cron.log 2>&1
