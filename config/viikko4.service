@@ -1,0 +1,15 @@
+[Unit]
+Description=Week 4 Read-only Flask Application
+After=network.target mariadb.service
+Requires=mariadb.service
+
+[Service]
+User=week4web
+Group=week4web
+WorkingDirectory=/opt/viikko4
+ExecStart=/opt/viikko4/.venv/bin/gunicorn --workers 1 --bind 127.0.0.1:8001 app:app
+Restart=always
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
